@@ -74,3 +74,28 @@ tabsContainer.addEventListener('click', function (e) {
     .querySelector(`.operations__content--${clicked.dataset.tab}`)
     .classList.add('operations__content--active');
 });
+
+//////////////////////
+// Menu fading animation
+const nav = document.querySelector('.nav');
+
+function handleHover(opacity) {
+  return function (e) {
+    if (e.target.classList.contains('nav__link')) {
+      const hovered = e.target;
+      const siblings = hovered.closest('.nav').querySelectorAll('.nav__link');
+      const logo = hovered.closest('.nav').querySelector('img');
+
+      siblings.forEach(el => {
+        if (el !== hovered) {
+          el.style.opacity = opacity;
+        }
+      });
+      logo.style.opacity = opacity;
+    }
+  };
+}
+
+nav.addEventListener('mouseover', handleHover(0.5));
+
+nav.addEventListener('mouseout', handleHover(1));
