@@ -99,3 +99,27 @@ function handleHover(opacity) {
 nav.addEventListener('mouseover', handleHover(0.5));
 
 nav.addEventListener('mouseout', handleHover(1));
+
+///////////////////////
+// Sticky menu
+const navHeight = nav.getBoundingClientRect().height;
+const header = document.querySelector('.header');
+
+const obsOptions = {
+  root: null,
+  threshold: 0,
+  rootMargin: `-${navHeight}px`,
+};
+
+const obsCallback = function (entries, observer) {
+  const [entry] = entries;
+
+  if (!entry.isIntersecting) {
+    nav.classList.add('sticky');
+  } else {
+    nav.classList.remove('sticky');
+  }
+};
+
+const observer = new IntersectionObserver(obsCallback, obsOptions);
+observer.observe(header);
