@@ -180,31 +180,65 @@ allImgs.forEach(img => imgsObserver.observe(img));
 const allSlides = document.querySelectorAll('.slide');
 const buttonLeft = document.querySelector('.slider__btn--left');
 const buttonRight = document.querySelector('.slider__btn--right');
-
+const dotsContainer = document.querySelector('.dots');
 let currentSlider = 0;
 
-const slider = document.querySelector('.slider');
+// const slider = document.querySelector('.slider');
 
-allSlides.forEach(
-  (slide, index) => (slide.style.transform = `translateX(${index * 100}%)`)
-);
-
-buttonRight.addEventListener('click', function (e) {
-  currentSlider++;
-  allSlides.forEach(
-    (s, i) =>
-      (s.style.transform = `translateX(${
-        (i - (currentSlider % allSlides.length)) * 100
-      }%)`)
+function createDots() {
+  allSlides.forEach((_, i) =>
+    dotsContainer.insertAdjacentHTML(
+      'beforeend',
+      `<button class="dots__dot" data-slide="${i}"></button>`
+    )
   );
+}
+
+createDots();
+
+function goToSlide(position) {
+  allSlides.forEach(
+    (slide, index) =>
+      (slide.style.transform = `translateX(${(index - position) * 100}%)`)
+  );
+  activeDot(position);
+}
+
+function activeDot(pos) {
+  dotsContainer.querySelectorAll('.dots__dot').forEach((dot, i) => {
+    if (pos == i) {
+      dot.classList.add('dots__dot--active');
+    } else {
+      dot.classList.remove('dots__dot--active');
+    }
+  });
+}
+
+function toNextSlide() {
+  currentSlider = (currentSlider + 1) % allSlides.length;
+  goToSlide(currentSlider);
+}
+
+function toPreviousSlide() {
+  currentSlider = (currentSlider + allSlides.length - 1) % allSlides.length;
+  goToSlide(currentSlider);
+}
+
+goToSlide(0);
+
+buttonRight.addEventListener('click', toNextSlide);
+buttonLeft.addEventListener('click', toPreviousSlide);
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'ArrowLeft') {
+    toPreviousSlide();
+  } else if (e.key === 'ArrowRight') {
+    toNextSlide();
+  }
 });
 
-buttonLeft.addEventListener('click', function (e) {
-  currentSlider--;
-  allSlides.forEach(
-    (s, i) =>
-      (s.style.transform = `translateX(${
-        (i - ((currentSlider + allSlides.length) % allSlides.length)) * 100
-      }%)`)
-  );
+dotsContainer.addEventListener('click', function (e) {
+  if (e.target.classList.contains('dots__dot')) {
+    const slide = e.target.dataset.slide;
+    goToSlide(+slide);
+  }
 });
