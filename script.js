@@ -147,3 +147,64 @@ allSections.forEach(function (section) {
   sectionObserver.observe(section);
   section.classList.add('section--hidden');
 });
+
+////////////////////////
+// lazy loading img
+
+const allImgs = document.querySelectorAll('img[data-src]');
+
+const lazyLoading = function (entries, observer) {
+  const [entry] = entries;
+
+  if (!entry.isIntersecting) return;
+
+  entry.target.src = entry.target.dataset.src;
+  entry.target.addEventListener('load', function () {
+    entry.target.classList.remove('lazy-img');
+  });
+
+  observer.unobserve(entry.target);
+};
+
+const imgsObserver = new IntersectionObserver(lazyLoading, {
+  root: null,
+  threshold: 0,
+  rootMargin: '200px',
+});
+
+allImgs.forEach(img => imgsObserver.observe(img));
+
+//////////////////////////
+// slider
+
+const allSlides = document.querySelectorAll('.slide');
+const buttonLeft = document.querySelector('.slider__btn--left');
+const buttonRight = document.querySelector('.slider__btn--right');
+
+let currentSlider = 0;
+
+const slider = document.querySelector('.slider');
+
+allSlides.forEach(
+  (slide, index) => (slide.style.transform = `translateX(${index * 100}%)`)
+);
+
+buttonRight.addEventListener('click', function (e) {
+  currentSlider++;
+  allSlides.forEach(
+    (s, i) =>
+      (s.style.transform = `translateX(${
+        (i - (currentSlider % allSlides.length)) * 100
+      }%)`)
+  );
+});
+
+buttonLeft.addEventListener('click', function (e) {
+  currentSlider--;
+  allSlides.forEach(
+    (s, i) =>
+      (s.style.transform = `translateX(${
+        (i - ((currentSlider + allSlides.length) % allSlides.length)) * 100
+      }%)`)
+  );
+});
