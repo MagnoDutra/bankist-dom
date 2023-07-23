@@ -242,3 +242,10 @@ dotsContainer.addEventListener('click', function (e) {
     goToSlide(+slide);
   }
 });
+
+////////////////
+//DOM Lifecycle
+
+// DOMLoadContent = html parse + DOM finished building
+// load = page fully load
+// unload = exiting page
